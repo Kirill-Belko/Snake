@@ -14,6 +14,7 @@ public class Snake extends JComponent {
     private int width = 8;
     private int height = 8;
     private int speed = 2;
+    private int offsetY = 0;
     private TextInputControlSkin.Direction direction = TextInputControlSkin.Direction.RIGHT;
     List<Dot> dotList = new ArrayList<>();
 
@@ -78,19 +79,47 @@ public class Snake extends JComponent {
     public void move() {
         switch (direction) {
             case UP:
-                int prevY = y;
                 y-=speed;
-                if(prevY - y == height) {
+                this.offsetY ++;
+                if(this.offsetY >= height) {
+                    this.offsetY = 0;
                     for (int i = 0; i < this.dotList.size(); i++) {
-                        this.dotList.get(i).setX(this.getX() + this.dotList.get(i).getWidth() * (i + 1));
-                        this.dotList.get(i).setY(this.getY());
+                        this.dotList.get(i).setX(this.getX() + this.dotList.get(i).getWidth());
+                        this.dotList.get(i).setY(this.getY() + this.height * (i+1));
                     }
                 }
             break;
-            case DOWN: y+=speed; break;
-            case LEFT: x-=speed; break;
-            case RIGHT: x+=speed; break;
+            case DOWN:
+                y+=speed;
+                this.offsetY ++;
+                if(this.offsetY >= height) {
+                    this.offsetY = 0;
+                    for (int i = 0; i < this.dotList.size(); i++) {
+                        this.dotList.get(i).setX(this.getX() + this.dotList.get(i).getWidth());
+                        this.dotList.get(i).setY(this.getY() - this.height * (i+1));
+                    }
+                }
+            break;
+            case LEFT:
+                x-=speed;
+                for (int i = 0; i < this.dotList.size(); i++) {
+                    this.dotList.get(i).setX(this.getX() + this.dotList.get(i).getWidth() * (i + 1));
+                    this.dotList.get(i).setY(this.getY());
+                }
+            break;
+            case RIGHT:
+                x+=speed;
+                for (int i = 0; i < this.dotList.size(); i++) {
+                    this.dotList.get(i).setX(this.getX() - this.dotList.get(i).getWidth() * (i + 1));
+                    this.dotList.get(i).setY(this.getY());
+                }
+            break;
         }
+
+//        for (int i = 0; i < this.dotList.size(); i++) {
+//            this.dotList.get(i).setX(this.getX() - this.dotList.get(i).getWidth() * (i + 1));
+//            this.dotList.get(i).setY(this.getY());
+//        }
     }
 
     public void keyPressed(KeyEvent event) {
